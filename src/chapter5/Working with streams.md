@@ -47,6 +47,69 @@ List<String> flatMapList =
                 .collect(toList());
 ```
 
+## 매칭과 검색
+### anyMatch() , allMatch(), noneMatch()
+```java
+if (menu.stream().anyMatch(Dish::isVegetarian)) {
+    System.out.println("채식 요리는 하나 이상 있다.");
+}
+
+if (menu.stream().allMatch(Dish::isVegetarian)) {
+    System.out.println("모든 요리는 채식이다.");
+}
+
+if (menu.stream().noneMatch(Dish::isVegetarian)) {
+    System.out.println("모든 요리는 채식이 아니다");
+}
+```
+- 프레디케이트와 주어진 스트림의 요소의 일치 여부를 확인한다.
+- boolean을 반환하는 최종 연산
+- 쇼트서킷 기법을 활용한다.
+
+> **쇼트서킷 기법**  
+> java의 &&, ||와 같이 모든 스트림의 요소를 처리하지 않고도 결과를 반환할 수 있다.   
+
+### findAny(), findFirst()
+
+```java
+// 
+Optional<Dish> dish = 
+        menu.stream()
+            .filter(Dish::isVegetarian)
+            .findAny();
+
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+Optional<Integer> firstSquareDivisibleByThree =
+        numbers.stream()
+                .map(n -> n * n)
+                .filter(n -> n % 3 == 0)
+                .findFirst();
+```
+- findAny() : 현재 스트림에서 임의의 요소를 반환한다.
+- findFirst() : 현재 스트림에서 첫 번째 요소를 반환한다. 
+- 단, 아무 요소도 반환하지 않을 수 있으므로 Optional을 반환한다.
+
+> **Optional< T >**  
+> 값의 존재나 부재 여부를 표현하는 컨테이너 클래스
+
+## 리듀싱
+### reduce()
+```java
+// 최종 합계 구하기
+int sum = numbers.stream().reduce(0, Integer::sum);
+
+// 스트림의 요리 개수 구하기
+int count = menu.stream()
+                .map(d -> 1)
+                .reduce(0, (a, b) -> a + b);
+```
+
+- 모든 스트림 요소를 처리해서 하나의 값으로 도출한다.
+- reduce(T identity, BinaryOperator < T> accumulator)는 두 개의 인수를 갖는다. 
+- 초기값 T와 두 요소를 조합해서 새로운 값을 만드는 BinaryOperator 이다.
+- 초기값이 없도록 오버로드된 reduce는 Optional 객체를 반환한다.
+
 ## references
-https://wjjeong.tistory.com/42
+https://wjjeong.tistory.com/42  
+
 https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/stream/Stream.html
